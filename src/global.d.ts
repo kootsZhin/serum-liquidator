@@ -21,6 +21,7 @@ export interface OracleAsset {
 export interface Market {
   name: string;
   address: string;
+  authority: string;
   reserves: Reserve[];
 }
 export interface Reserve {

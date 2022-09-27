@@ -2,9 +2,9 @@
 import { Config } from 'global';
 import fs from 'fs';
 
-const marketsPath = "markets.json"
+const marketsUrl = "https://serum-borrow-lending.vercel.app/api/markets"
 export async function getConfig(): Promise<Config> {
-  const markets = JSON.parse(fs.readFileSync(marketsPath, 'utf8'));
+  const markets: unknown = await fetch(marketsUrl); //JSON.parse(fs.readFileSync(marketsUrl, 'utf8'));
   return markets as Config;
 }
 

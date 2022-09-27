@@ -7,18 +7,19 @@ import { getTokensOracleData } from "./libs/pyth";
 import { liquidate } from "./libs/liquidate";
 import { readSecret } from "./utils";
 
-const APP = "devnet";
-const REST_API_URL = "https://solana-lending-frontend.vercel.app/api/markets";
+const APP = "mainnet-beta"; //"devnet";
+const REST_API_URL = "https://serum-borrow-lending.vercel.app/api/markets";
+const CLUSTER_API_URL = "https://solana-api.projectserum.com";
 
 async function runLiquidator() {
     const config = await (await fetch(REST_API_URL)).json();
 
-    const connection = new Connection(clusterApiUrl(APP), "confirmed");
-    const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readSecret("payer"))));
+    const connection = new Connection(CLUSTER_API_URL, "confirmed");
+    const payer = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readSecret("./payer.json"))));
 
     console.log(`
     app: ${APP}
-    clusterUrl: ${clusterApiUrl(APP)}
+    clusterUrl: ${CLUSTER_API_URL}
     wallet: ${payer.publicKey.toBase58()}
   `);
 
@@ -44,6 +45,8 @@ async function runLiquidator() {
                             allReserves,
                             tokensOracle,
                         );
+                        console.log("borrowedValue", Number(borrowedValue.toString()))
+                        console.log("unhealthyBorrowValue", Number(unhealthyBorrowValue.toString()))
 
                         // Do nothing if obligation is healthy
                         if (borrowedValue.isLessThanOrEqualTo(unhealthyBorrowValue)) {
